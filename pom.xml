@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.ksust.qq</groupId>
             <artifactId>http-api-sdk</artifactId>
-            <version>1.0.RELEASE</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
 
