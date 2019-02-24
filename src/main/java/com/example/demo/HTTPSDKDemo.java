@@ -1,10 +1,10 @@
 package com.example.demo;
 
+import com.alibaba.fastjson.JSON;
 import com.ksust.qq.http_api_sdk.HTTPSDK;
 import com.ksust.qq.http_api_sdk.entity.MessageGet;
 import com.ksust.qq.http_api_sdk.entity.vo.Group;
 import com.ksust.qq.http_api_sdk.enums.TypeEnum;
-import com.ksust.qq.http_api_sdk.impl.HTTPSDKDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,15 +21,21 @@ public class HTTPSDKDemo {
         return "success";
     }
 
+
+    private void test(MessageGet msg) {
+        System.out.println(JSON.toJSONString(msg));
+    }
+
     //提交返回演示：外部地址（插件中填的请求地址）：http://yourIP:9999/ip
     @PostMapping(value = "/qq")
     public String qq(@RequestBody String data) throws Exception {
         //外部消息通过这个方法进入，请求地址即为 POST host:port/qq
         //开始演示：发送消息回复（点赞等），并且演示通过提交返回获取群列表
-        HTTPSDK httpsdk = new HTTPSDKDefault(data);
+        HTTPSDK httpsdk = HTTPSDK.httpGet(data);
         //插件发来的消息
-        MessageGet msg = httpsdk.getMessageGet();
-        if (httpsdk.getMessageGet().getType() == TypeEnum.FRIEND.getCode() && !httpsdk.isCallback()) {
+        MessageGet msg = httpsdk.getMsg();
+        test(msg);
+        if (httpsdk.getMsg().getType() == TypeEnum.FRIEND.getCode() && !httpsdk.isCallback()) {
             //私聊消息
             //点赞、抖窗、回复
             httpsdk.sendLike(msg.getQQ(), 2);
@@ -50,6 +56,6 @@ public class HTTPSDKDemo {
             }
         }
         //必须！！！向插件回复消息并清空当前对象待发送消息
-        return httpsdk.send();
+        return httpsdk.toJsonString();
     }
 }
